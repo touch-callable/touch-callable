@@ -22,7 +22,7 @@ setuptools.setup(
     install_requires=['Flask'],
     include_package_data=True,
     entry_points = {
-        'console_scripts': ['touch-callable=touch_callable.touch_callble:main'],
+        'console_scripts': ['touch-callable=touch_callable.touch_callable:main'],
     }
 )
 
