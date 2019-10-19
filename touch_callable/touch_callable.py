@@ -165,9 +165,10 @@ def load_module_by_path(path):
 
 
 def main():
+    global MODULE
     parser = argparse.ArgumentParser(description="Touch Callables.")
     parser.add_argument("module_path", type=str, help="模块路径，支持绝对和相对路径")
-    parser.add_argument("--port", type=int, default=6666, help="端口号")
+    parser.add_argument("--port", type=int, default=6789, help="端口号")
     parser.add_argument("--debug", type=bool, default=False, help="是否开启 Flask 的调试模式")
 
     args = parser.parse_args()
