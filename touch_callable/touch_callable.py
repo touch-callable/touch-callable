@@ -7,10 +7,19 @@ import inspect
 import os
 import sys
 import typing
+import time
 
 from flask import Flask, jsonify, request, send_file, send_from_directory
 
+
 app = Flask(__name__)
+
+
+CALLABLES = None
+HAS_NEW_MODULE = False
+MODULE_PATH = None
+LOCALE = "en"
+KEEP_WATCHING = True
 
 
 @app.route("/")
@@ -48,15 +57,27 @@ def get_callable_from_module(module):
             return None
         if isinstance(default, enum.Enum):
             return default.value
+        if isinstance(default, (datetime.date, datetime.datetime)):
+            return default.isoformat()
+        if isinstance(default, datetime.time):
+            return default.replace(microsecond=0).isoformat()
         return default
 
     def is_support_signature(signature):
+
         for parameter in signature.parameters.values():
-            if issubclass(parameter.annotation, enum.Enum) or issubclass(
-                parameter.annotation, datetime.datetime
-            ):
+
+            if issubclass(parameter.annotation, enum.Enum):
                 return True
-            if parameter.annotation not in (str, int, float, bool):
+            if parameter.annotation not in (
+                str,
+                int,
+                float,
+                bool,
+                datetime.datetime,
+                datetime.date,
+                datetime.time,
+            ):
                 return False
             if parameter.kind in (
                 inspect.Parameter.VAR_KEYWORD,
@@ -76,6 +97,9 @@ def get_callable_from_module(module):
 
     data = []
     for callable_name, callable_ in inspect.getmembers(module, inspect.isfunction):
+        if callable_.__module__ != module.__name__:
+            continue
+
         full_doc = inspect.getdoc(callable_)
         signature = inspect.signature(callable_)
         if not is_support_signature(signature):
@@ -103,7 +127,21 @@ def get_callable_from_module(module):
     return data
 
 
-CALLABLES = None
+@app.route("/module-status", methods=["GET"])
+def module_status():
+    global HAS_NEW_MODULE
+    return {"has_new": HAS_NEW_MODULE}
+
+
+@app.route("/reload-module", methods=["POST"])
+def reload_module():
+    global MODULE
+    global MODULE_PATH
+    global HAS_NEW_MODULE
+
+    MODULE = load_module_by_path(MODULE_PATH)
+    HAS_NEW_MODULE = False
+    return {"status": "ok"}
 
 
 @app.route("/callable")
@@ -112,6 +150,16 @@ def get_callable():
     if not CALLABLES:
         CALLABLES = get_callable_from_module(MODULE)
     return jsonify(CALLABLES)
+
+
+@app.route("/locale", methods=["GET", "POST"])
+def get_locale():
+    global LOCALE
+    if request.method == "GET":
+        return {"locale": LOCALE}
+    else:
+        LOCALE = request.json["locale"]
+        return {"locale": LOCALE}
 
 
 @app.route("/callable/<string:callable_name>", methods=["POST"])
@@ -124,11 +172,24 @@ def run_callable(callable_name):
         if value is None:
             type_casted_parameters[param_name] = value
             continue
+
         type_ = type_hints[param_name]
         if type_ is datetime.datetime:
             type_casted_parameters[param_name] = datetime.datetime.strptime(
                 value, "%Y-%m-%dT%H:%M:%S.%fZ"
             )
+            continue
+
+        if type_ is datetime.date:
+            type_casted_parameters[param_name] = datetime.datetime.strptime(
+                value, "%Y-%m-%dT%H:%M:%S.%fZ"
+            ).date()
+            continue
+
+        if type_ is datetime.time:
+            type_casted_parameters[param_name] = datetime.datetime.strptime(
+                value, "%Y-%m-%dT%H:%M:%S.%fZ"
+            ).time()
             continue
 
         if type_.__class__ == typing.Union.__class__:
@@ -139,7 +200,6 @@ def run_callable(callable_name):
                     except:
                         pass
             continue
-
         type_casted_parameters[param_name] = type_(value)
 
     status = "success"
@@ -164,16 +224,81 @@ def load_module_by_path(path):
     return module
 
 
-def main():
+def _iter_module_files():
+    """This iterates over all relevant Python files.  It goes through all
+    loaded files from modules, all files in folders of already loaded modules
+    as well as all files reachable through a package.
+    """
     global MODULE
+    # The list call is necessary on Python 3 in case the module
+    # dictionary modifies during iteration.
+
+    for module in list(sys.modules.values()) + [MODULE]:
+        if module is None:
+            continue
+        filename = getattr(module, "__file__", None)
+        if filename:
+            if os.path.isdir(filename) and os.path.exists(
+                os.path.join(filename, "__init__.py")
+            ):
+                filename = os.path.join(filename, "__init__.py")
+
+            old = None
+            while not os.path.isfile(filename):
+                old = filename
+                filename = os.path.dirname(filename)
+                if filename == old:
+                    break
+            else:
+                if filename[-4:] in (".pyc", ".pyo"):
+                    filename = filename[:-1]
+                yield filename
+
+
+def watch_module():
+    global MODULE_PATH, MODULE, HAS_NEW_MODULE
+    global KEEP_WATCHING
+
+    from itertools import chain
+
+    mtimes = {}
+    while 1 and KEEP_WATCHING:
+        for filename in chain(_iter_module_files()):
+            try:
+                mtime = os.stat(filename).st_mtime
+            except OSError:
+                continue
+
+            old_time = mtimes.get(filename)
+            if old_time is None:
+                mtimes[filename] = mtime
+                continue
+            elif mtime > old_time:
+                HAS_NEW_MODULE = True
+                mtimes = {}
+        time.sleep(1)
+
+
+def main():
+    global MODULE, MODULE_PATH, KEEP_WATCHING
     parser = argparse.ArgumentParser(description="Touch Callables.")
     parser.add_argument("module_path", type=str, help="模块路径，支持绝对和相对路径")
+    parser.add_argument("--host", type=str, default="127.0.0.1", help="监听 IP 地址")
     parser.add_argument("--port", type=int, default=6789, help="端口号")
     parser.add_argument("--debug", type=bool, default=False, help="是否开启 Flask 的调试模式")
 
     args = parser.parse_args()
+    MODULE_PATH = args.module_path
     MODULE = load_module_by_path(args.module_path)
-    app.run(debug=args.debug, port=args.port)
+
+    import threading
+
+    t = threading.Thread(target=watch_module)
+    t.start()
+
+    app.run(host=args.host, debug=args.debug, port=args.port)
+    KEEP_WATCHING = False
+    t.join()
 
 
 if __name__ == "__main__":
