@@ -4,6 +4,10 @@ The web framework for less serious application.
 
 Auto generat Web UI for Python Functions.
 
+## Support platforms
+
+macOS
+
 # Installing
 
 Only support Python 3.6!
