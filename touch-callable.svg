@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="224px" height="223px" viewBox="0 0 224 223" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>编组</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M6.48075496,131.95025 L24.9627073,150.431098 C23.6769032,156.417298 23,162.629599 23,169 C23,217.601058 62.398942,257 111,257 C117.370401,257 123.582702,256.323097 129.568902,255.037293 L149.04975,274.519245 C137.316712,278.71484 124.67522,281 111.5,281 C49.9202504,281 1.42108547e-14,231.07975 1.42108547e-14,169.5 C1.42108547e-14,156.32478 2.28516018,143.683288 6.48075496,131.95025 Z M111.5,58 C173.07975,58 223,107.92025 223,169.5 C223,183.225266 220.520053,196.371309 215.983803,208.514485 L196.670284,189.201335 C198.193974,182.714721 199,175.951489 199,169 C199,120.398942 159.601058,81 111,81 C104.048511,81 97.2852792,81.8060255 90.7986652,83.3297162 L72.4855155,65.0161969 C84.628691,60.4799473 97.7747341,58 111.5,58 Z" id="path-1"></path>
+        <filter x="0.0%" y="0.0%" width="100.0%" height="100.0%" filterUnits="objectBoundingBox" id="filter-2">
+            <feGaussianBlur stdDeviation="0" in="SourceGraphic"></feGaussianBlur>
+        </filter>
+    </defs>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="编组" transform="translate(0.270599, -58.000000)">
+            <mask id="mask-3" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <use id="形状结合" fill="#000000" filter="url(#filter-2)" xlink:href="#path-1"></use>
+            <text id="t" font-family="STBaoliSC-Regular, Baoli SC" font-size="201" font-weight="normal" fill="#000000">
+                <tspan x="71" y="213">t</tspan>
+            </text>
+        </g>
+    </g>
+</svg>
