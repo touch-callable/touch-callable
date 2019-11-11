@@ -60,7 +60,7 @@ Default is False, if you want to enable it
 ### All support types
 
 ```python
-# examply.py
+# example.py
 from enum import Enum
 from datetime import datetime, date, time
 
@@ -86,7 +86,7 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 ### Control Water Dispenser
 
 ```python
-# examply.py
+# example.py
 from enum import Enum
 
 
