@@ -331,6 +331,7 @@ class ModuleReloader extends Component {
         updateCallables(response.data)
       });
     this.setState({loading: false})
+    window.location.reload(true)
     message.success('更新成功', 1);
   }
 

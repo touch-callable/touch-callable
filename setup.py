@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="touch-callable",
-    version="0.0.2",
+    version="0.0.3",
     author="Peng Weikang",
     author_email="pengwk@pengwk.com",
     description="The web framework for less serious application.",

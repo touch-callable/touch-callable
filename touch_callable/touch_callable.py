@@ -138,9 +138,12 @@ def reload_module():
     global MODULE
     global MODULE_PATH
     global HAS_NEW_MODULE
+    global CALLABLES
 
     MODULE = load_module_by_path(MODULE_PATH)
     HAS_NEW_MODULE = False
+    CALLABLES = None
+    
     return {"status": "ok"}
 
 
