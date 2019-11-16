@@ -57,7 +57,7 @@
 ### 所有支持的函数参数
 
 ```python
-# examply.py
+# example.py
 from enum import Enum
 from datetime import datetime, date, time
 
@@ -83,7 +83,7 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 ### 控制饮水机
 
 ```python
-# examply.py
+# example.py
 from enum import Enum
 
 
