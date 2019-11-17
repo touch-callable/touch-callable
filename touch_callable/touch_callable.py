@@ -42,6 +42,21 @@ def serve_manifest():
     return send_file("./front-end/build/manifest.json")
 
 
+@app.route("/favicon.ico")
+def serve_favicon():
+    return send_file("./front-end/build/favicon.ico")
+
+
+@app.route("/logo192.png")
+def serve_logo192():
+    return send_file("./front-end/build/logo192.png")
+
+
+@app.route("/logo512.png")
+def serve_logo512():
+    return send_file("./front-end/build/logo512.png")
+
+
 def get_callable_from_module(module):
     def annotation_name_or_none(annotation):
         if annotation != inspect._empty:
@@ -143,7 +158,7 @@ def reload_module():
     MODULE = load_module_by_path(MODULE_PATH)
     HAS_NEW_MODULE = False
     CALLABLES = None
-    
+
     return {"status": "ok"}
 
 

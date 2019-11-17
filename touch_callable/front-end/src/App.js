@@ -10,6 +10,9 @@ import moment, { locales } from 'moment';
 import 'moment/locale/zh-cn';
 import './App.css';
 
+import { ReactComponent as Logo } from './logo.svg';
+import { ReactComponent as LogoText } from './touch-callable-text.svg'
+
 import { updateCallables, setLocale, changeModuleStatus } from './reducers'
 
 
@@ -369,7 +372,7 @@ class ModuleReloader extends Component {
       <Button
         disabled={!this.props.hasNewModule}
         loading={this.state.loading}
-        style={{ display: 'inline-block' }}
+        style={{ display: 'inline-block', marginRight: '20px'}}
         onClick={this.reloadModule}
       >
       Reload Module
@@ -408,14 +411,19 @@ class App extends Component {
     return (
       <ConfigProvider locale={locale}>
         <Layout className="layout" style={{ minHeight: '10000px' }} key={locale ? locale.locale : 'en' /* Have to refresh for production environment */}>
-          <Header>
-            <Row>
-              <Col span={8}><p style={{ color: 'white', display: 'inline-block' }}>Touch Callable</p></Col>
-              <Col span={8} push={5}><ReduxModuleReloader /></Col>
-              <Col span={8}><ReduxLanguageSelector /></Col>
+          <Header style={{ background: 'white', boxShadow: '0px 1px 5px #d0cdcd' }}>
+            <Row type="flex" justify="center" align="middle">
+              <Col span={8}>
+                <Logo style={{ verticalAlign: 'middle', marginRight: '20px', width: '48px', height: '48px'}} />
+                <LogoText style={{ verticalAlign: 'middle', width: '150px' }} />
+              </Col>
+              <Col span={8} ></Col>
+              <Col span={8} style={{ textAlign: "right" }}>
+                <ReduxModuleReloader style={{ marginRight: '20px' }} />
+                <ReduxLanguageSelector /></Col>
             </Row>
           </Header>
-          <Content style={{ margin: '0 auto', width: '700px' }}>
+          <Content style={{ margin: '10px auto', width: '700px' }}>
             <HashRouter>
               <Switch>
                 <Route exact path='/' component={ReduxCallables} />
