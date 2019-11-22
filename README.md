@@ -3,6 +3,10 @@
 </p>
 
 <h1 align="center">Touch-Callable</h1>
+<p align="center">
+  <image src="https://img.shields.io/pypi/v/touch-callable.svg" />
+  <image src="https://img.shields.io/pypi/dm/touch-callable.svg" />
+</p>
 
 <p>
 The web framework for less serious application.
