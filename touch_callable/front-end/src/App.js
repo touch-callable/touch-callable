@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { HashRouter, Route, Link, Switch } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { List, Form, Input, Button, message, DatePicker, TimePicker, Modal, Layout, Radio, Divider, PageHeader, InputNumber, ConfigProvider, Row, Col } from 'antd';
+import { List, Form, Input, Button, message, DatePicker, Upload, Icon, TimePicker, Modal, Layout, Radio, Divider, PageHeader, InputNumber, ConfigProvider, Row, Col } from 'antd';
 import enUS from 'antd/es/locale/en_US';
 import zhCN from 'antd/es/locale/zh_CN';
 import axios from 'axios';
@@ -63,6 +63,54 @@ const mapDispatchToProps = dispatch => {
 
 const ReduxCallables = connect(mapStateToProps, mapDispatchToProps)(Callables)
 
+
+class SingleFileUpload extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fileList: [],
+      disabled: false
+    };
+  }
+
+  handleChange = info => {
+    let fileList = [...info.fileList];
+
+    if (fileList.length >= 1) {
+      this.setState({
+        disabled: true
+      })
+    }
+
+    this.setState({ fileList });
+    this.props.onChange(fileList)
+  };
+
+  onRemove = e => {
+    this.setState({disabled: false})
+    return true
+  };
+
+  render() {
+    const { disabled } = this.state;
+    const props = {
+      onChange: this.handleChange,
+      onRemove: this.onRemove
+    };
+
+    return (
+      <Upload {...props} beforeUpload={file => { return false }} fileList={this.state.fileList}>
+        {this.state.fileList.length === 0 ? (
+          <Button disabled={disabled} >
+            <Icon type="upload" /> Upload
+          </Button>) : null
+        }
+      </Upload>
+    );
+  }
+}
+
+
 class CallableForm extends React.Component {
 
   constructor(props) {
@@ -90,14 +138,46 @@ class CallableForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        axios.post(`callable/${this.props.match.params.name}`, values)
-          .then((response) => {
-            if (response.data.status === 'success') {
-              this.showSuccessModal(response.data.result)
-            } else {
-              this.showErrorModal(response.data.result)
-            }
-          });
+        let files = {}
+        let json = {}
+        for (var paramName of Object.keys(values)) {
+          let value = values[paramName]
+          if (Array.isArray(value) && value.length !== 0 && value[0] instanceof Object && value[0].originFileObj instanceof File) {
+            files[paramName] = values[paramName][0].originFileObj
+          } else {
+            json[paramName] = values[paramName]
+          }
+        }
+
+        if (Object.keys(files).length === 0) {
+          axios.post(`callable/${this.props.match.params.name}`, values)
+            .then((response) => {
+              if (response.data.status === 'success') {
+                this.showSuccessModal(response.data.result)
+              } else {
+                this.showErrorModal(response.data.result)
+              }
+            });
+        } else {
+          let formDataWithFile = new FormData()
+          formDataWithFile.set('json', JSON.stringify(json))
+          for (var paramName of Object.keys(files)) {
+            formDataWithFile.append(paramName, files[paramName])
+          }
+          axios({
+            method: 'post',
+            url: `callable/${this.props.match.params.name}`,
+            data: formDataWithFile,
+            headers: { 'Content-Type': 'multipart/form-data' }
+          })
+            .then((response) => {
+              if (response.data.status === 'success') {
+                this.showSuccessModal(response.data.result)
+              } else {
+                this.showErrorModal(response.data.result)
+              }
+            });
+        }
       }
 
     });
@@ -128,10 +208,28 @@ class CallableForm extends React.Component {
     }
   };
 
+  normFile = e => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
+  };
+
   buildFormItem = (parameter, index, array) => {
     const { getFieldDecorator } = this.props.form;
 
     let parameterName = parameter.name
+
+    if (["BytesIO", "BinaryIO"].includes(parameter.annotation)) {
+      return <Form.Item label={parameterName} key={index}>
+        {getFieldDecorator(parameterName, {
+          valuePropName: 'fileList',
+          getValueFromEvent: this.normFile,
+          rules: [{ required: parameter['required'], message: `请上传文件!` }],
+        })(<SingleFileUpload ></SingleFileUpload>)}
+      </Form.Item>
+    }
+
     let inputWidget
     switch (parameter.annotation) {
       case 'str':
@@ -215,7 +313,8 @@ class CallableForm extends React.Component {
           {
             this.callable ? this.callable.parameters.map(this.buildFormItem) : []
           }
-          <Form.Item wrapperCol={{ span: 24}}>
+
+          <Form.Item wrapperCol={{ span: 24 }}>
             <Button type="primary" htmlType="submit" block>
               运行
             </Button>
@@ -242,7 +341,7 @@ class LanguageSelector extends Component {
   getLocaleText = locale => {
     if (locale === enUS) {
       return 'English'
-    } else if (locale === zhCN){
+    } else if (locale === zhCN) {
       return '中文'
     }
   }
@@ -271,7 +370,7 @@ class LanguageSelector extends Component {
 
   onChangeLocale = e => {
     const { setLocale, locale } = this.props
-    
+
     let newLocale = null
     if (locale === enUS) {
       newLocale = zhCN
@@ -282,7 +381,7 @@ class LanguageSelector extends Component {
     axios.post('locale', { locale: newLocale.locale })
 
     setLocale(newLocale);
-    this.setState({localeText: this.getLocaleText(newLocale)})
+    this.setState({ localeText: this.getLocaleText(newLocale) })
 
     if (newLocale === enUS) {
       moment.locale('en');
@@ -326,14 +425,14 @@ class ModuleReloader extends Component {
 
   reloadModule = e => {
     const { updateCallables } = this.props
-    this.setState({loading: true})
+    this.setState({ loading: true })
     axios.post('reload-module')
 
     axios.get('callable')
       .then(response => {
         updateCallables(response.data)
       });
-    this.setState({loading: false})
+    this.setState({ loading: false })
     window.location.reload(true)
     message.success('更新成功', 1);
   }
@@ -372,10 +471,10 @@ class ModuleReloader extends Component {
       <Button
         disabled={!this.props.hasNewModule}
         loading={this.state.loading}
-        style={{ display: 'inline-block', marginRight: '20px'}}
+        style={{ display: 'inline-block', marginRight: '20px' }}
         onClick={this.reloadModule}
       >
-      Reload Module
+        Reload Module
       </Button>
     )
   }
@@ -410,26 +509,33 @@ class App extends Component {
     const { locale } = this.props;
     return (
       <ConfigProvider locale={locale}>
-        <Layout className="layout" style={{ minHeight: '10000px' }} key={locale ? locale.locale : 'en' /* Have to refresh for production environment */}>
-          <Header style={{ background: 'white', boxShadow: '0px 1px 5px #d0cdcd' }}>
+        <Layout className="layout" key={locale ? locale.locale : 'en' /* Have to refresh for production environment */}>
+          <Header style={{ background: 'white', boxShadow: '0px 1px 5px #d0cdcd', height: 'unset' }}>
             <Row type="flex" justify="center" align="middle">
-              <Col span={8}>
-                <Logo style={{ verticalAlign: 'middle', marginRight: '20px', width: '48px', height: '48px'}} />
+              <Col md={8} xs={24}>
+                <Logo style={{ verticalAlign: 'middle', marginRight: '20px', width: '48px', height: '48px' }} />
                 <LogoText style={{ verticalAlign: 'middle', width: '150px' }} />
               </Col>
-              <Col span={8} ></Col>
-              <Col span={8} style={{ textAlign: "right" }}>
+              <Col md={8} xs={24}></Col>
+              <Col md={8} xs={24} style={{ textAlign: "right" }}>
                 <ReduxModuleReloader style={{ marginRight: '20px' }} />
-                <ReduxLanguageSelector /></Col>
+                <ReduxLanguageSelector />
+              </Col>
             </Row>
           </Header>
-          <Content style={{ margin: '10px auto', width: '700px' }}>
-            <HashRouter>
-              <Switch>
-                <Route exact path='/' component={ReduxCallables} />
-                <Route path='/callable/:name' component={ReduxWrappedCallableForm} />
-              </Switch>
-            </HashRouter>
+          <Content style={{ margin: '10px 10px' }}>
+            <Row span={24}>
+              <Col md={6} xs={24}></Col>
+              <Col md={12} xs={24}>
+                <HashRouter>
+                  <Switch>
+                    <Route exact path='/' component={ReduxCallables} />
+                    <Route path='/callable/:name' component={ReduxWrappedCallableForm} />
+                  </Switch>
+                </HashRouter>
+              </Col>
+              <Col md={6} xs={24}></Col>
+            </Row>
           </Content>
           <Footer style={{ textAlign: 'center' }}>Touch Callable</Footer>
         </Layout>
