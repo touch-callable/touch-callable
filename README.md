@@ -22,7 +22,7 @@ English | [简体中文](./README_zh_CN.md)
 - Ubuntu
 - Windows
 
-## Installing
+## Installation
 
 Only support Python 3.6!
 
