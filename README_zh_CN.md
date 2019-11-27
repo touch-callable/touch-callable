@@ -84,11 +84,11 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 
 `$ touch-callable example.py`
 
-![demo](./demo_all_args.png)
+![demo](https://raw.githubusercontent.com/pengwk/touch-callable/master/new_demo_all_args.png)
 
 响应式 UI：
 
-![demo_with_reponsive_ui](./demo_all_args_with_reponsive_ui.png)
+![demo_with_reponsive_ui](https://raw.githubusercontent.com/pengwk/touch-callable/master/demo_all_args_with_reponsive_ui.png)
 
 ### 控制饮水机
 
