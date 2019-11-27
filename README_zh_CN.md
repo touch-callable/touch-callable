@@ -31,6 +31,8 @@
 - datetime.date
 - datetime.time
 - enum.Enum
+- io.BytesIO
+- typing.BinaryIO
 
 ## 命令行参数
 
@@ -58,8 +60,10 @@
 
 ```python
 # example.py
-from enum import Enum
 from datetime import datetime, date, time
+from enum import Enum
+import io
+import typing
 
 
 class Languages(Enum):
@@ -70,15 +74,21 @@ class Languages(Enum):
 
 def demo(int_: int, str_: str, float_: float, bool_: bool,
          enum_: Languages,
-         datetime_: datetime=datetime.now(),
-         date_: date=date.today(),
-         time_: time=time(1, 2, 3)):
+         datetime_: datetime = datetime.now(),
+         date_: date = date.today(),
+         time_: time = time(1, 2, 3),
+         bytes_io: io.BytesIO = None,
+         binary_io: typing.BinaryIO = None):
   pass
 ```
 
 `$ touch-callable example.py`
 
 ![demo](./demo_all_args.png)
+
+响应式 UI：
+
+![demo_with_reponsive_ui](./demo_all_args_with_reponsive_ui.png)
 
 ### 控制饮水机
 

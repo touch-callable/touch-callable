@@ -38,6 +38,8 @@ Only support Python 3.6!
 - datetime.date
 - datetime.time
 - enum.Enum
+- io.BytesIO
+- typing.BinaryIO
 
 ## CommandLine args
 
@@ -77,9 +79,11 @@ class Languages(Enum):
 
 def demo(int_: int, str_: str, float_: float, bool_: bool,
          enum_: Languages,
-         datetime_: datetime=datetime.now(),
-         date_: date=date.today(),
-         time_: time=time(1, 2, 3)):
+         datetime_: datetime = datetime.now(),
+         date_: date = date.today(),
+         time_: time = time(1, 2, 3),
+         bytes_io: io.BytesIO = None,
+         binary_io: typing.BinaryIO = None):
   pass
 ```
 
