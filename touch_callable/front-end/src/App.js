@@ -7,6 +7,7 @@ import enUS from 'antd/es/locale/en_US';
 import zhCN from 'antd/es/locale/zh_CN';
 import axios from 'axios';
 import moment, { locales } from 'moment';
+import { injectIntl, FormattedMessage, IntlProvider } from 'react-intl';
 import 'moment/locale/zh-cn';
 import './App.css';
 
@@ -14,6 +15,9 @@ import { ReactComponent as Logo } from './logo.svg';
 import { ReactComponent as LogoText } from './touch-callable-text.svg'
 
 import { updateCallables, setLocale, changeModuleStatus } from './reducers'
+
+import en_US from './locales/en_US'
+import zh_CN from './locales/zh_CN'
 
 
 const { Header, Content, Footer } = Layout;
@@ -61,7 +65,7 @@ const mapDispatchToProps = dispatch => {
   }, dispatch)
 }
 
-const ReduxCallables = connect(mapStateToProps, mapDispatchToProps)(Callables)
+const ReduxCallables = connect(mapStateToProps, mapDispatchToProps)(injectIntl(Callables))
 
 
 class SingleFileUpload extends React.Component {
@@ -87,7 +91,7 @@ class SingleFileUpload extends React.Component {
   };
 
   onRemove = e => {
-    this.setState({disabled: false})
+    this.setState({ disabled: false })
     return true
   };
 
@@ -102,7 +106,7 @@ class SingleFileUpload extends React.Component {
       <Upload {...props} beforeUpload={file => { return false }} fileList={this.state.fileList}>
         {this.state.fileList.length === 0 ? (
           <Button disabled={disabled} >
-            <Icon type="upload" /> Upload
+            <Icon type="upload" /> <FormattedMessage id="upload" />
           </Button>) : null
         }
       </Upload>
@@ -185,14 +189,14 @@ class CallableForm extends React.Component {
 
   showSuccessModal(result) {
     Modal.success({
-      title: '执行成功',
+      title: this.props.intl.formatMessage({id: "executionSucceed"}),
       content: result,
     });
   }
 
   showErrorModal(result) {
     Modal.error({
-      title: '执行失败',
+      title: this.props.intl.formatMessage({id: "executionFailed"}),
       content: result,
     });
   }
@@ -225,7 +229,7 @@ class CallableForm extends React.Component {
         {getFieldDecorator(parameterName, {
           valuePropName: 'fileList',
           getValueFromEvent: this.normFile,
-          rules: [{ required: parameter['required'], message: `请上传文件!` }],
+          rules: [{ required: parameter['required'], message: <FormattedMessage id='pleaseUploadFile' /> }],
         })(<SingleFileUpload ></SingleFileUpload>)}
       </Form.Item>
     }
@@ -272,7 +276,7 @@ class CallableForm extends React.Component {
     return <Form.Item label={parameterName} key={index}>
       {getFieldDecorator(parameterName, {
         initialValue: this.buildDefaultValue(parameter),
-        rules: [{ required: parameter['required'], message: `请输入${parameterName}!` }],
+        rules: [{ required: parameter['required'], message: this.props.intl.formatMessage({id: "pleaseInput"}, { parameterName: parameterName }) }],
       })(inputWidget)}
     </Form.Item>
   }
@@ -301,13 +305,13 @@ class CallableForm extends React.Component {
           border: '1px solid rgb(235, 237, 240)',
         }}
         onBack={() => this.props.history.push('/')}
-        title="功能列表"
+        title={this.props.intl.formatMessage({id: "callables"})}
       >
         <Form layout="vertical" onSubmit={this.handleSubmit}>
           <Divider>{this.callable ? this.callable.callable_name : ''}</Divider>
-          <pre>{this.callable && this.callable.doc ? this.callable.doc : '没有文档'}</pre>
+          <pre>{this.callable && this.callable.doc ? this.callable.doc : <FormattedMessage id="noDoc" />}</pre>
           {
-            this.callable && this.callable.parameters.length ? <Divider>参数填写</Divider> : []
+            this.callable && this.callable.parameters.length ? <Divider><FormattedMessage id="parameterList" /></Divider> : []
           }
 
           {
@@ -316,7 +320,7 @@ class CallableForm extends React.Component {
 
           <Form.Item wrapperCol={{ span: 24 }}>
             <Button type="primary" htmlType="submit" block>
-              运行
+              <FormattedMessage id="touch" />
             </Button>
           </Form.Item>
         </Form>
@@ -325,7 +329,7 @@ class CallableForm extends React.Component {
   }
 }
 
-const WrappedCallableForm = Form.create({ name: 'callablForm' })(CallableForm);
+const WrappedCallableForm = Form.create({ name: 'callablForm' })(injectIntl(CallableForm));
 
 const mapStateToFormProps = state => {
   return {
@@ -434,7 +438,7 @@ class ModuleReloader extends Component {
       });
     this.setState({ loading: false })
     window.location.reload(true)
-    message.success('更新成功', 1);
+    message.success(this.props.intl.formatMessage({id: "updateCompleted"}), 1);
   }
 
   queryNewModule = () => {
@@ -446,7 +450,7 @@ class ModuleReloader extends Component {
           return
         }
         if (response.data.has_new) {
-          message.info('模块有更新！', 1);
+          message.info(this.props.intl.formatMessage({id: "moduleChanged"}), 1);
         }
         changeModuleStatus(response.data.has_new)
       });
@@ -474,7 +478,7 @@ class ModuleReloader extends Component {
         style={{ display: 'inline-block', marginRight: '20px' }}
         onClick={this.reloadModule}
       >
-        Reload Module
+        <FormattedMessage id="reloadModule" />
       </Button>
     )
   }
@@ -496,7 +500,7 @@ const mapchangeModuleStatusToProps = dispatch => {
 }
 
 
-const ReduxModuleReloader = connect(mapModuleStateToProps, mapchangeModuleStatusToProps)(ModuleReloader)
+const ReduxModuleReloader = connect(mapModuleStateToProps, mapchangeModuleStatusToProps)(injectIntl(ModuleReloader))
 
 
 class App extends Component {
@@ -507,38 +511,41 @@ class App extends Component {
 
   render() {
     const { locale } = this.props;
+
     return (
       <ConfigProvider locale={locale}>
-        <Layout className="layout" key={locale ? locale.locale : 'en' /* Have to refresh for production environment */}>
-          <Header style={{ background: 'white', boxShadow: '0px 1px 5px #d0cdcd', height: 'unset' }}>
-            <Row type="flex" justify="center" align="middle">
-              <Col md={8} xs={24}>
-                <Logo style={{ verticalAlign: 'middle', marginRight: '20px', width: '48px', height: '48px' }} />
-                <LogoText style={{ verticalAlign: 'middle', width: '150px' }} />
-              </Col>
-              <Col md={8} xs={24}></Col>
-              <Col md={8} xs={24} style={{ textAlign: "right" }}>
-                <ReduxModuleReloader style={{ marginRight: '20px' }} />
-                <ReduxLanguageSelector />
-              </Col>
-            </Row>
-          </Header>
-          <Content style={{ margin: '10px 10px' }}>
-            <Row span={24}>
-              <Col md={6} xs={24}></Col>
-              <Col md={12} xs={24}>
-                <HashRouter>
-                  <Switch>
-                    <Route exact path='/' component={ReduxCallables} />
-                    <Route path='/callable/:name' component={ReduxWrappedCallableForm} />
-                  </Switch>
-                </HashRouter>
-              </Col>
-              <Col md={6} xs={24}></Col>
-            </Row>
-          </Content>
-          <Footer style={{ textAlign: 'center' }}>Touch Callable</Footer>
-        </Layout>
+        <IntlProvider key={locale} locale={locale.locale} messages={locale.locale === 'en' ? en_US : zh_CN}>
+          <Layout className="layout" key={locale ? locale.locale : 'en' /* Have to refresh for production environment */}>
+            <Header style={{ background: 'white', boxShadow: '0px 1px 5px #d0cdcd', height: 'unset' }}>
+              <Row type="flex" justify="center" align="middle">
+                <Col md={8} xs={24}>
+                  <Logo style={{ verticalAlign: 'middle', marginRight: '20px', width: '48px', height: '48px' }} />
+                  <LogoText style={{ verticalAlign: 'middle', width: '150px' }} />
+                </Col>
+                <Col md={8} xs={24}></Col>
+                <Col md={8} xs={24} style={{ textAlign: "right" }}>
+                  <ReduxModuleReloader style={{ marginRight: '20px' }} />
+                  <ReduxLanguageSelector />
+                </Col>
+              </Row>
+            </Header>
+            <Content style={{ margin: '10px 10px' }}>
+              <Row span={24}>
+                <Col md={6} xs={24}></Col>
+                <Col md={12} xs={24}>
+                  <HashRouter>
+                    <Switch>
+                      <Route exact path='/' component={ReduxCallables} />
+                      <Route path='/callable/:name' component={ReduxWrappedCallableForm} />
+                    </Switch>
+                  </HashRouter>
+                </Col>
+                <Col md={6} xs={24}></Col>
+              </Row>
+            </Content>
+            <Footer style={{ textAlign: 'center' }}>Touch Callable</Footer>
+          </Layout>
+        </IntlProvider>
       </ConfigProvider >
     )
   }
