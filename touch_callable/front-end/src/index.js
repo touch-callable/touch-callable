@@ -15,9 +15,9 @@ let store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__({ trace: true, traceLimit: 25 }));
 
 ReactDOM.render(
-  <Provider store={store}>
-    <ReduxApp />
-  </Provider>, 
+    <Provider store={store}>
+      <ReduxApp />
+    </Provider>, 
   document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
