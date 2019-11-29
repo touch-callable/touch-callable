@@ -1,20 +1,20 @@
-import enUS from 'antd/es/locale/en_US';
+import enUS from 'antd/es/locale/en_US'
 
-export function updateCallables(callables) {
+export function updateCallables (callables) {
   return {
     type: 'updateCallables',
     callables
   }
 }
 
-export function setLocale(locale) {
+export function setLocale (locale) {
   return {
     type: 'setLocale',
     locale
   }
 }
 
-export function changeModuleStatus(hasNew) {
+export function changeModuleStatus (hasNew) {
   return {
     type: 'changeModuleStatus',
     hasNew
@@ -27,8 +27,7 @@ const initialState = {
   hasNewModule: false
 }
 
-
-function runCallableApp(state = initialState, action) {
+function runCallableApp (state = initialState, action) {
   switch (action.type) {
     case 'updateCallables':
       return Object.assign({}, state, {
@@ -46,6 +45,5 @@ function runCallableApp(state = initialState, action) {
       return state
   }
 }
-
 
 export default runCallableApp

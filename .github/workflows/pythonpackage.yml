@@ -1,4 +1,4 @@
-name: Python package
+name: Code lint
 
 on: [pull_request]
 
@@ -30,3 +30,15 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # the GitHub editor is 127 chars wide
         flake8 . --count --max-complexity=22 --max-line-length=127 --statistics
+    # Install Node.js
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12.3.1
+    - name: Install front end dependencies
+      working-directory: ./touch_callable/front-end
+      run: |
+        yarn install
+    - name: Run ESLint
+      working-directory: ./touch_callable/front-end
+      run: |
+        npx eslint ./src
