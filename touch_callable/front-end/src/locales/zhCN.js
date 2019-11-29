@@ -1,4 +1,4 @@
-const zh_CN = {
+const zhCN = {
   touch: '运行',
   updateCompleted: '更新成功',
   reloadModule: '重加载模块',
@@ -8,9 +8,9 @@ const zh_CN = {
   callables: '功能列表',
   upload: '上传',
   pleaseUploadFile: '请上传文件',
-  executionFailed:  '执行失败',
+  executionFailed: '执行失败',
   executionSucceed: '执行成功',
   pleaseInput: '请输入 {parameterName}'
 }
 
-export default zh_CN; 
+export default zhCN
