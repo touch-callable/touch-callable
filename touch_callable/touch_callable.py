@@ -95,7 +95,7 @@ def get_callable_from_module(module):
                 datetime.date,
                 datetime.time,
                 io.BytesIO,
-                typing.BinaryIO
+                typing.BinaryIO,
             ):
                 return False
             if parameter.kind in (
@@ -149,10 +149,10 @@ def get_callable_from_module(module):
 def is_required(callable_name, param_name):
     global CALLABLES
     for callable_info in CALLABLES:
-        if callable_info['callable_name'] == callable_name:
-            for param_info in callable_info['parameters']:
-                if param_info['name'] == param_name:
-                    return param_info['required']
+        if callable_info["callable_name"] == callable_name:
+            for param_info in callable_info["parameters"]:
+                if param_info["name"] == param_name:
+                    return param_info["required"]
 
 
 @app.route("/module-status", methods=["GET"])
@@ -198,7 +198,7 @@ def run_callable(callable_name):
     callable_ = getattr(MODULE, callable_name)
 
     if request.form:
-        data = json.loads(request.form['json'])
+        data = json.loads(request.form["json"])
         for param_name, file in request.files.items():
             # ByteIO
             data[param_name] = file.stream._file
@@ -239,10 +239,10 @@ def run_callable(callable_name):
 
         if type_.__class__ == typing.Union.__class__:
             for possible_type in type_.__args__:
-                if possible_type is not type(None):
+                if possible_type is not type(None):  # noqa: E721
                     try:
                         type_casted_parameters[param_name] = possible_type(value)
-                    except:
+                    except:  # noqa: E722
                         pass
             continue
         type_casted_parameters[param_name] = type_(value)
