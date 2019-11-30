@@ -4,6 +4,11 @@
 
 <h1 align="center">Touch-Callable</h1>
 
+<p align="center">
+  <image src="https://img.shields.io/pypi/v/touch-callable.svg" />
+  <image src="https://img.shields.io/pypi/dm/touch-callable.svg" />
+</p>
+
 面向非严肃 Web 应用
 自动为 Python 函数生成 Web 界面
 
@@ -89,30 +94,6 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 响应式 UI：
 
 ![demo_with_reponsive_ui](https://raw.githubusercontent.com/pengwk/touch-callable/master/demo_all_args_with_reponsive_ui.png)
-
-### 控制饮水机
-
-```python
-# example.py
-from enum import Enum
-
-
-class 开关(Enum):
-  开 = '开'
-  关 = '关'
-
-
-def 饮水机(口令: str, 制热: 开关=None, 制冷: 开关=开关('开')):
-  """这是 20618 的！"""
-  if 口令 != '多喝热水':
-    raise ValueError('你是谁，我不认识你')
-
-  # 省略具体逻辑
-```
-
-`$ touch-callable example.py`
-
-![demo](./demo_control_water_dispenser.png)
 
 ## 常见问题
 
