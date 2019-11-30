@@ -3,7 +3,7 @@ name: Release to PyPI
 on:
   push:
     branches:
-      - auto-release-to-pypi
+      - 'auto-release-to-pypi'
     tags:
       - 'v*.*.*'
 
