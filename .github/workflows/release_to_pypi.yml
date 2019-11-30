@@ -41,7 +41,7 @@ jobs:
     - name: Build Python package
       run: python setup.py sdist bdist_wheel
     - name: Upload
-      working-directory: ./touch_callable/dist
+      working-directory: ./dist
       env: 
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TestPyPIToken }}
