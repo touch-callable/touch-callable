@@ -2,8 +2,8 @@ name: Release to PyPI
 
 on:
   push:
-    branches:
-      - 'auto-release-to-pypi'
+    branches-ignore:
+      - '!auto-release-to-pypi'
     tags:
       - 'v*.*.*'
 
