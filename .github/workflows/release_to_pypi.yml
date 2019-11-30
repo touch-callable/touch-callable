@@ -5,7 +5,7 @@ on:
     branches:
       - auto-release-to-pypi
     tags:
-      - v*.*.*
+      - 'v*.*.*'
 
 jobs:
   build:
