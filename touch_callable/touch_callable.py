@@ -259,7 +259,7 @@ def run_callable(callable_name):
 def load_module_by_path(path):
     abspath = os.path.abspath(path)
     if not os.path.exists(abspath):
-        raise ValueError("文件不存在！")
+        raise ValueError("Module does not exist!")
 
     sys.path.insert(0, os.getcwd())
     module_name = os.path.splitext(os.path.basename(abspath))[0]
@@ -326,11 +326,11 @@ def watch_module():
 
 def main():
     global MODULE, MODULE_PATH, KEEP_WATCHING
-    parser = argparse.ArgumentParser(description="Touch Callables.")
-    parser.add_argument("module_path", type=str, help="模块路径，支持绝对和相对路径")
-    parser.add_argument("--host", type=str, default="127.0.0.1", help="监听 IP 地址")
-    parser.add_argument("--port", type=int, default=6789, help="端口号")
-    parser.add_argument("--debug", type=bool, default=False, help="是否开启 Flask 的调试模式")
+    parser = argparse.ArgumentParser(description="Touch Callable")
+    parser.add_argument("module_path", type=str)
+    parser.add_argument("--host", type=str, default="127.0.0.1")
+    parser.add_argument("--port", type=int, default=6789)
+    parser.add_argument("--debug", type=bool, default=False)
 
     args = parser.parse_args()
     MODULE_PATH = args.module_path
