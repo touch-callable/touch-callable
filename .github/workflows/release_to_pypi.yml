@@ -22,7 +22,7 @@ jobs:
       working-directory: ./touch_callable/front-end
       run: |
         yarn install
-    - name: Run ESLint
+    - name: Build front end
       working-directory: ./touch_callable/front-end
       run: yarn build
 
@@ -38,8 +38,7 @@ jobs:
     - name: Install build tools
       working-directory: ./touch_callable
       run: pip install twine
-    - name: Build
-      working-directory: ./touch_callable
+    - name: Build Python package
       run: python setup.py sdist bdist_wheel
     - name: Upload
       working-directory: ./touch_callable/
