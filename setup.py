@@ -20,6 +20,7 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=['Flask'],
+    setup_requires=['wheel'],
     include_package_data=True,
     entry_points={
         'console_scripts': ['touch-callable=touch_callable.touch_callable:main'],
