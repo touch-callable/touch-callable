@@ -61,6 +61,12 @@ Default is False, if you want to enable it
 
 `$ touch-callable example.py --debug True`
 
+## Screenshot
+
+#### callables
+
+![callables](https://raw.githubusercontent.com/pengwk/touch-callable/master/callables_en_us.png)
+
 ## Examples
 
 ### All support types
@@ -91,11 +97,7 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 
 `$ touch-callable example.py`
 
-![demo](https://raw.githubusercontent.com/pengwk/touch-callable/master/new_demo_all_args.png)
-
-Responsive UI:
-
-![demo_with_reponsive_ui](https://raw.githubusercontent.com/pengwk/touch-callable/master/demo_all_args_with_reponsive_ui.png)
+![demo_with_reponsive_ui](https://raw.githubusercontent.com/pengwk/touch-callable/master/demo_all_args_with_responsive_ui_en_us.png)
 
 
 

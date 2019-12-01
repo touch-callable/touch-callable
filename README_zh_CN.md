@@ -59,6 +59,12 @@
 
 `$ touch-callable example.py --debug True`
 
+## 截图
+
+#### 函数列表
+
+![callables](https://raw.githubusercontent.com/pengwk/touch-callable/master/callables_zh_cn.png)
+
 ## 示例
 
 ### 所有支持的函数参数
@@ -89,11 +95,7 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 
 `$ touch-callable example.py`
 
-![demo](https://raw.githubusercontent.com/pengwk/touch-callable/master/new_demo_all_args.png)
-
-响应式 UI：
-
-![demo_with_reponsive_ui](https://raw.githubusercontent.com/pengwk/touch-callable/master/demo_all_args_with_reponsive_ui.png)
+![demo_with_reponsive_ui](https://raw.githubusercontent.com/pengwk/touch-callable/master/demo_all_args_with_responsive_ui_zh_cn.png)
 
 ## 常见问题
 
