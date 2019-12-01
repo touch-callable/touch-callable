@@ -43,7 +43,7 @@
 
 #### `--host` 指定监听的主机
 
-默认为：172.0.0.1 也就是仅本机能访问。
+默认为：127.0.0.1 也就是仅本机能访问。
 
 如果希望监听所有网段：
 
@@ -78,9 +78,9 @@ import typing
 
 
 class Languages(Enum):
-  Python = 'Python'
-  PHP = 'PHP'
-  Java = 'Java'
+    Python = 'Python'
+    PHP = 'PHP'
+    Java = 'Java'
 
 
 def demo(int_: int, str_: str, float_: float, bool_: bool,
@@ -90,7 +90,7 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
          time_: time = time(1, 2, 3),
          bytes_io: io.BytesIO = None,
          binary_io: typing.BinaryIO = None):
-  pass
+    pass
 ```
 
 `$ touch-callable example.py`
