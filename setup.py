@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="touch-callable",
-    version="0.0.4",
+    version="0.0.5",
     author="Peng Weikang",
     author_email="pengwk@pengwk.com",
-    description="The web framework for less serious application.",
+    description="Automatically generate a Web UI for Python function using type annotations.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/pengwk/touch-callable",
