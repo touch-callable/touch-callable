@@ -45,7 +45,7 @@ Only support Python 3.6!
 
 #### `--host` 
 
-Default is 172.0.0.1, you can only visit it on your computer.
+Default is 127.0.0.1, you can only visit it on your computer.
 
 If you want to listen all networks：
 
