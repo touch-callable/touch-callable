@@ -80,9 +80,9 @@ import typing
 
 
 class Languages(Enum):
-  Python = 'Python'
-  PHP = 'PHP'
-  Java = 'Java'
+    Python = 'Python'
+    PHP = 'PHP'
+    Java = 'Java'
 
 
 def demo(int_: int, str_: str, float_: float, bool_: bool,
@@ -92,7 +92,7 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
          time_: time = time(1, 2, 3),
          bytes_io: io.BytesIO = None,
          binary_io: typing.BinaryIO = None):
-  pass
+    pass
 ```
 
 `$ touch-callable example.py`
