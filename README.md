@@ -99,5 +99,6 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 
 ![demo_with_reponsive_ui](https://raw.githubusercontent.com/pengwk/touch-callable/master/demo_all_args_with_responsive_ui_en_us.png)
 
+## Stargazers
 
-
+[![Stargazers over time](https://starchart.cc/pengwk/touch-callable.svg)](https://starchart.cc/pengwk/touch-callable)
