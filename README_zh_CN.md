@@ -105,5 +105,9 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 
 也可以使用 `$ python3 -m touch_callable.touch_callable example.py` 运行。
 
+## Stargazers
+
+[![Stargazers over time](https://starchart.cc/pengwk/touch-callable.svg)](https://starchart.cc/pengwk/touch-callable)
+
 
 
