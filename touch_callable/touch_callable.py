@@ -5,6 +5,7 @@ import enum
 import importlib.util
 import inspect
 import os
+import logging
 import sys
 import typing
 import json
@@ -15,6 +16,9 @@ from flask import Flask, jsonify, request, send_file, send_from_directory
 
 
 app = Flask(__name__)
+
+werkzeug_loger = logging.getLogger("werkzeug")
+werkzeug_loger.setLevel(logging.ERROR)
 
 
 CALLABLES = None
