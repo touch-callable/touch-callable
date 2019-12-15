@@ -39,6 +39,11 @@
 - io.BytesIO
 - typing.BinaryIO
 
+## 支持的函数返回值类型
+
+- 所有可以被 `json.dumps` 的对象
+- open('filename.xxx', 'rb')
+
 ## 命令行参数
 
 #### `--host` 指定监听的主机

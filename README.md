@@ -28,7 +28,7 @@ Only support Python 3.6!
 
 `pip install -U touch-callable`
 
-## Support types
+## Supported parameter value types
 
 - str
 - int
@@ -40,6 +40,11 @@ Only support Python 3.6!
 - enum.Enum
 - io.BytesIO
 - typing.BinaryIO
+
+## Supported return value types
+
+- All objects that can be `json.dumps`
+- open('filename.xxx', 'rb')
 
 ## CommandLine args
 
