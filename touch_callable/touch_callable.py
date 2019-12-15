@@ -5,6 +5,7 @@ import enum
 import importlib.util
 import inspect
 import os
+import logging
 import sys
 import typing
 import json
@@ -326,6 +327,7 @@ def watch_module():
 
 def main():
     global MODULE, MODULE_PATH, KEEP_WATCHING
+
     parser = argparse.ArgumentParser(description="Touch Callable")
     parser.add_argument("module_path", type=str)
     parser.add_argument("--host", type=str, default="127.0.0.1")
@@ -336,11 +338,20 @@ def main():
     MODULE_PATH = args.module_path
     MODULE = load_module_by_path(args.module_path)
 
+    if not args.debug:
+        werkzeug_loger = logging.getLogger("werkzeug")
+        werkzeug_loger.setLevel(logging.ERROR)
+
+        os.environ["WERKZEUG_RUN_MAIN"] = "true"
+
     import threading
 
     t = threading.Thread(target=watch_module)
     t.start()
 
+    import click
+
+    click.echo(" * touch-callable serving http://{}:{}".format(args.host, args.port))
     app.run(host=args.host, debug=args.debug, port=args.port)
     KEEP_WATCHING = False
     t.join()
