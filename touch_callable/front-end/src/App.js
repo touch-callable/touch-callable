@@ -145,15 +145,20 @@ class CallableForm extends React.Component {
           }
         }
 
+        let axiosOptions = {}
+        if (this.callable.return_type === 'BufferedReader') {
+          axiosOptions = { responseType: 'blob' }
+        }
+
         if (Object.keys(files).length === 0) {
-          axios.post(`callable/${this.props.match.params.name}`, values)
+          axios.post(`callable/${this.props.match.params.name}`, values, axiosOptions)
             .then((response) => {
               if (response.headers['content-disposition']) {
-                const blob = new Blob([response.data], { type: 'application/octet-stream' })
+                const blob = new Blob([response.data], { type: response.headers['content-type'] })
                 const a = document.createElement('a')
                 const url = window.URL.createObjectURL(blob)
                 a.href = url
-                a.download = response.headers['content-disposition'].split('=')[1]
+                a.download = decodeURI(response.headers['content-disposition'].split('=')[1])
                 a.click()
                 window.URL.revokeObjectURL(url)
                 return
@@ -175,7 +180,8 @@ class CallableForm extends React.Component {
             method: 'post',
             url: `callable/${this.props.match.params.name}`,
             data: formDataWithFile,
-            headers: { 'Content-Type': 'multipart/form-data' }
+            headers: { 'Content-Type': 'multipart/form-data' },
+            ...axiosOptions
           })
             .then((response) => {
               if (response.data.status === 'success') {
