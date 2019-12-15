@@ -28,7 +28,7 @@ Only support Python 3.6!
 
 `pip install -U touch-callable`
 
-## Support types
+## Supported parameter value types
 
 - str
 - int
@@ -40,6 +40,11 @@ Only support Python 3.6!
 - enum.Enum
 - io.BytesIO
 - typing.BinaryIO
+
+## Supported return value types
+
+- All objects that can be `json.dumps`
+- `open('filename.xxx', 'rb')`, return values' annotation should be `io.BufferedReader`
 
 ## CommandLine args
 
@@ -98,6 +103,15 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 `$ touch-callable example.py`
 
 ![demo_with_reponsive_ui](https://raw.githubusercontent.com/pengwk/touch-callable/master/demo_all_args_with_responsive_ui_en_us.png)
+
+### Return file
+
+```python
+import io
+
+def return_file() -> io.BufferedReader:
+  return open('filename', 'rb')
+```
 
 ## Stargazers
 

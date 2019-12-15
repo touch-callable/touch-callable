@@ -6,6 +6,7 @@ import importlib.util
 import inspect
 import os
 import logging
+import urllib.parse
 import sys
 import typing
 import json
@@ -254,6 +255,12 @@ def run_callable(callable_name):
     except Exception as e:
         status = "fail"
         result = str(e)
+    if isinstance(result, io.BufferedReader):
+        return send_file(
+            result,
+            attachment_filename=urllib.parse.quote(os.path.basename(result.name)),
+            as_attachment=True,
+        )
     return jsonify({"status": status, "result": result})
 
 
