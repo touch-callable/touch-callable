@@ -148,6 +148,17 @@ class CallableForm extends React.Component {
         if (Object.keys(files).length === 0) {
           axios.post(`callable/${this.props.match.params.name}`, values)
             .then((response) => {
+              if (response.headers['content-disposition']) {
+                const blob = new Blob([response.data], { type: 'application/octet-stream' })
+                const a = document.createElement('a')
+                const url = window.URL.createObjectURL(blob)
+                a.href = url
+                a.download = response.headers['content-disposition'].split('=')[1]
+                a.click()
+                window.URL.revokeObjectURL(url)
+                return
+              }
+
               if (response.data.status === 'success') {
                 this.showSuccessModal(response.data.result)
               } else {
