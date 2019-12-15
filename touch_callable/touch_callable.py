@@ -13,7 +13,6 @@ import time
 import io
 
 from flask import Flask, jsonify, request, send_file, send_from_directory
-from Crypto.PublicKey.RSA import importKey
 
 
 app = Flask(__name__)
