@@ -42,7 +42,7 @@
 ## 支持的函数返回值类型
 
 - 所有可以被 `json.dumps` 的对象
-- open('filename.xxx', 'rb')
+- `open('filename.xxx', 'rb')`，返回值的类型标注需要是 `io.BufferedReader`
 
 ## 命令行参数
 
@@ -101,6 +101,15 @@ def demo(int_: int, str_: str, float_: float, bool_: bool,
 `$ touch-callable example.py`
 
 ![demo_with_reponsive_ui](https://raw.githubusercontent.com/pengwk/touch-callable/master/demo_all_args_with_responsive_ui_zh_cn.png)
+
+### 返回文件
+
+```python
+import io
+
+def return_file() -> io.BufferedReader:
+  return open('filename', 'rb')
+```
 
 ## 常见问题
 

@@ -6,6 +6,7 @@ import importlib.util
 import inspect
 import os
 import logging
+import urllib.parse
 import sys
 import typing
 import json
@@ -257,8 +258,7 @@ def run_callable(callable_name):
     if isinstance(result, io.BufferedReader):
         return send_file(
             result,
-            mimetype="application/octet-stream",
-            attachment_filename=os.path.basename(result.name),
+            attachment_filename=urllib.parse.quote(os.path.basename(result.name)),
             as_attachment=True,
         )
     return jsonify({"status": status, "result": result})
