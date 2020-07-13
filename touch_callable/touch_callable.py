@@ -7,6 +7,7 @@ import inspect
 import os
 import logging
 import urllib.parse
+import pytz
 import sys
 import typing
 import json
@@ -199,23 +200,23 @@ def get_locale():
 def run_callable(callable_name):
     callable_ = getattr(MODULE, callable_name)
 
+    type_casted_parameters = {}
     if request.form:
         data = json.loads(request.form["json"])
+
         for param_name, file in request.files.items():
-            # ByteIO
-            data[param_name] = file.stream._file
+            file_in_bytes_io = file.stream._file
+            if isinstance(file.stream._file, io.BufferedRandom):
+                file_in_bytes_io = io.BytesIO()
+                file_in_bytes_io.write(file.stream._file.read())
+                file_in_bytes_io.seek(0)
+            type_casted_parameters[param_name] = file_in_bytes_io
     else:
         data = request.json
 
-    type_casted_parameters = {}
     type_hints = typing.get_type_hints(callable_)
     for param_name, value in data.items():
         type_ = type_hints[param_name]
-        if type_ in (io.BytesIO, typing.BinaryIO):
-            if not value and not is_required(callable_name, param_name):
-                continue
-            type_casted_parameters[param_name] = value
-            continue
 
         if value is None:
             type_casted_parameters[param_name] = value
@@ -224,7 +225,7 @@ def run_callable(callable_name):
         if type_ is datetime.datetime:
             type_casted_parameters[param_name] = datetime.datetime.strptime(
                 value, "%Y-%m-%dT%H:%M:%S.%fZ"
-            )
+            ).astimezone(pytz.UTC)
             continue
 
         if type_ is datetime.date:

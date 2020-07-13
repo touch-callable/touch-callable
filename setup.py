@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="touch-callable",
-    version="0.0.6",
+    version="0.0.7",
     author="Peng Weikang",
     author_email="pengwk@pengwk.com",
     description="Automatically generate a Web UI for Python function using type annotations.",
