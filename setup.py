@@ -19,7 +19,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=['Flask'],
+    install_requires=['Flask', 'pytz'],
     setup_requires=['wheel'],
     include_package_data=True,
     entry_points={
