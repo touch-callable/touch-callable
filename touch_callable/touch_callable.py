@@ -225,7 +225,7 @@ def run_callable(callable_name):
         if type_ is datetime.datetime:
             type_casted_parameters[param_name] = datetime.datetime.strptime(
                 value, "%Y-%m-%dT%H:%M:%S.%fZ"
-            ).replace(pytz.UTC)
+            ).replace(tzinfo=pytz.UTC)
             continue
 
         if type_ is datetime.date:
